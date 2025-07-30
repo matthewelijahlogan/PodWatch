@@ -1,0 +1,41 @@
+/* frontend/css/index.css */
+
+.podcast-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.podcast-card {
+  background-color: var(--bg-medium);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.podcast-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glow);
+}
+
+.podcast-card img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--border-radius);
+  margin-bottom: 0.75rem;
+}
+
+.podcast-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 0.3rem;
+}
+
+.podcast-author {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}

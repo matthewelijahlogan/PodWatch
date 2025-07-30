@@ -1,0 +1,44 @@
+/* frontend/css/editorsPicks.css */
+
+#editors-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.editor-card {
+  background-color: var(--bg-medium, #222);
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: white;
+}
+
+.editor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+}
+
+.editor-card h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: var(--accent, #ff4444);
+}
+
+.editor-author {
+  font-style: italic;
+  color: var(--text-muted, #ccc);
+  margin-bottom: 0.5rem;
+}
+
+.editor-desc {
+  line-height: 1.4;
+}
+
+.error-msg {
+  color: red;
+  text-align: center;
+  font-weight: bold;
+}

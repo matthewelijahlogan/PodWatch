@@ -1,0 +1,189 @@
+/* frontend/css/style.css */
+
+@font-face {
+  font-family: 'LondrinaBold';
+  src: url('../assets/fonts/LondrinaSolid-Black.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Commissioner';
+  src: url('../assets/fonts/Commissioner-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LondrinaOutline';
+  src: url('../assets/fonts/LondrinaOutline-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'SpicyRice';
+  src: url('../assets/fonts/SpicyRice-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --bg-dark: #0e0e0e;
+  --bg-medium: #1a1a1a;
+  --bg-light: #2a2a2a;
+
+  --text-main: #f0f0f0;
+  --text-muted: #bbbbbb;
+  --accent: #e63946;
+
+  --border-radius: 8px;
+  --transition-fast: 0.2s;
+  --transition-slow: 0.4s;
+  --glow: 0 0 8px var(--accent), 0 0 16px var(--accent);
+
+  --font-body: 'Commissioner', sans-serif;
+  --font-title: 'LondrinaBold', cursive;
+  --font-funky: 'SpicyRice', cursive;
+  --font-outline: 'LondrinaOutline', cursive;
+
+  --font-main: var(--font-body); /* Set this as your default font */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.guide-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.guide-header img {
+  height: 64px;
+  width: auto;
+}
+
+.guide-header h1 {
+  font-size: 2.5rem;
+  color: white;
+  text-shadow: var(--glow);
+}
+
+
+.title-flex {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-img {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 6px var(--accent));
+}
+
+.title-text h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  color: var(--text-outline);
+}
+
+
+h1 {
+  font-family: var(--font-outline);
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: white;
+}
+
+button {
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  padding: 0.75em 1.5em;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: var(--glow);
+}
+
+button:focus,
+button:active {
+  outline: none;
+  animation: pulse-select 0.3s ease-out;
+}
+
+@keyframes pulse-select {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.12); box-shadow: var(--glow); }
+  100% { transform: scale(1); }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Reusable card layout */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.card {
+  background-color: #2a2a2a;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--glow);
+}
+
+.card h2 {
+  font-size: 1.2rem;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.card p {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
