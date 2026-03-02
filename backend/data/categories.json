@@ -1,0 +1,5 @@
+[
+    {"name": "Technology", "description": "Podcasts about tech."},
+    {"name": "Health", "description": "Podcasts about health and wellness."},
+    {"name": "Business", "description": "Podcasts about business and startups."}
+]

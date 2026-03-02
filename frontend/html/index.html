@@ -1,35 +1,55 @@
 <!-- frontend/html/index.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PodWatch – Podcast TV Guide</title>
 
-  <!-- Stylesheets (relative to this HTML file) -->
-  <link rel="stylesheet" href="../css/style.css" />
-  <link rel="stylesheet" href="../css/index.css" />
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/index.css">
+  <link rel="icon" type="image/x-icon" href="../assets/img/favicon.ico">
 </head>
 <body>
   <div class="container">
     <header class="guide-header">
       <div class="title-flex">
-        <img src="../assets/img/logo/logo.png" alt="PodWatch Logo" class="logo-img" />
+        <img src="../assets/img/logo/logo.png" alt="PodWatch Logo" class="logo-img" id="logo">
         <div class="title-text">
           <h1>PodWatch</h1>
         </div>
+        <nav class="dropdown-menu" id="dropdownMenu">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="categories.html">Categories</a></li>
+            <li><a href="recommended.html">Recommended</a></li>
+            <li><a href="new-episodes.html">New Episodes</a></li>
+            <li><a href="editors-pick.html">Editor's Picks</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+        </nav>
       </div>
     </header>
 
+<main>
 
-    <main>
-      <section class="podcast-grid">
-        <!-- JS will dynamically populate podcast cards here -->
-      </section>
-    </main>
+  <!-- 🔧 ADD THIS: where your podcast cards will load -->
+  <section class="podcast-grid"></section>
+  </main>
+
   </div>
 
-  <!-- JavaScript module (relative to this HTML file) -->
+  <footer class="footer">
+    <p>&copy; 2025 PodWatch. All rights reserved.</p>
+  </footer>
+
+  <!-- JavaScript modules -->
+  <script type="module">
+  import { loadPodcastGuide } from '../js/indexLoader.js';
+  loadPodcastGuide();
+  </script>
   <script type="module" src="../js/app.js"></script>
 </body>
 </html>

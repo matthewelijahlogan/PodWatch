@@ -1,12 +1,14 @@
 [
   {
-    "title": "Darknet Diaries",
-    "author": "Jack Rhysider",
-    "description": "A podcast about hackers, breaches, shadow governments and all things cybercrime."
+    "id": "1",
+    "title": "Daily Tech News Show",
+    "author": "Tom Merritt",
+    "description": "Your daily dose of tech news and commentary."
   },
   {
-    "title": "The Daily",
-    "author": "The New York Times",
-    "description": "Top news stories every morning, expertly narrated."
+    "id": "3",
+    "title": "Radiolab",
+    "author": "Jad Abumrad and Robert Krulwich",
+    "description": "Investigating a strange world through science and storytelling."
   }
 ]

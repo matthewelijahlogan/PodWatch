@@ -85,6 +85,69 @@ body {
   text-shadow: var(--glow);
 }
 
+/* Dropdown menu container */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--bg-medium);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  display: none; /* hidden by default */
+  min-width: 180px;
+  z-index: 1000;
+}
+
+/* Show dropdown */
+.dropdown-menu.show {
+  display: block;
+}
+
+/* Dropdown list styling */
+.dropdown-menu ul {
+  list-style: none;
+  padding: 0.5rem 0;
+  margin: 0;
+}
+
+.dropdown-menu ul li {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #444;
+}
+
+.dropdown-menu ul li:last-child {
+  border-bottom: none;
+}
+
+.dropdown-menu ul li a {
+  color: var(--accent);
+  text-decoration: none;
+  display: block;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-menu ul li a:hover {
+  background-color: var(--accent);
+  color: var(--text-main);
+  text-shadow: var(--glow);
+  cursor: pointer;
+}
+
+/* Shake animation for logo */
+@keyframes shake {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3px, 0); }
+  40% { transform: translate(3px, 0); }
+  60% { transform: translate(-2px, 0); }
+  80% { transform: translate(2px, 0); }
+  100% { transform: translate(0, 0); }
+}
+
+.logo-shake {
+  animation: shake 0.4s ease;
+}
+
 
 .title-flex {
   display: flex;
