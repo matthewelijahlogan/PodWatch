@@ -52,3 +52,17 @@ PowerShell example:
 $env:EXPO_PUBLIC_API_BASE_URL='http://192.168.1.12:5000'
 npm start
 ```
+
+## Render production backend
+
+After deploying backend to Render, set:
+
+```powershell
+$env:EXPO_PUBLIC_API_BASE_URL='https://YOUR-SERVICE.onrender.com'
+```
+
+Then rebuild/install mobile so the new API URL is baked into the bundle:
+
+```powershell
+npm run android
+```
