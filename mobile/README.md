@@ -40,7 +40,11 @@ npm start
 
 ## API base URL
 
-Set `EXPO_PUBLIC_API_BASE_URL` if needed:
+By default, mobile now points to:
+
+- `https://podwatch.onrender.com`
+
+Set `EXPO_PUBLIC_API_BASE_URL` only when you want to override it (for local dev/testing):
 
 - Android emulator: `http://10.0.2.2:5000`
 - iOS simulator: `http://localhost:5000`
