@@ -53,7 +53,7 @@ def serve_assets(filename):
 # Serve public folder content
 @app.route('/public/<path:filename>')
 def serve_public(filename):
-    return send_from_directory('../frontend/public', filename)
+    return send_from_directory('../public', filename)
 
 # ✅ Serve podcast images scraped into backend/data/images/
 @app.route('/images/<path:filename>')
@@ -63,7 +63,7 @@ def serve_podcast_image(filename):
 # Serve favicon
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory('../frontend/public', 'favicon.ico')
+    return send_from_directory('../frontend/assets/img', 'favicon.ico')
 
 # Optional fallback for any unmatched static path
 @app.route('/<path:path>')
