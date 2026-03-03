@@ -3,14 +3,27 @@
     "name": "PodWatch",
     "slug": "podwatch-mobile",
     "version": "1.0.0",
+    "icon": "./assets/images/logo.png",
     "orientation": "portrait",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#000000"
+    },
     "platforms": [
       "android",
       "ios"
     ],
     "userInterfaceStyle": "light",
     "android": {
-      "package": "com.matthewelijahlogan.podwatchmobile"
+      "package": "com.matthewelijahlogan.podwatchmobile",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/logo.png",
+        "backgroundColor": "#000000"
+      }
+    },
+    "ios": {
+      "icon": "./assets/images/logo.png"
     }
   }
 }

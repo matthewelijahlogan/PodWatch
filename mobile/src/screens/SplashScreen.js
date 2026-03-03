@@ -1,34 +1,70 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Image, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, ImageBackground, StyleSheet, Text, View } from 'react-native';
 
 export default function SplashScreen({ navigation }) {
-  const spin = useRef(new Animated.Value(0)).current;
+  const splashOpacity = useRef(new Animated.Value(0)).current;
+  const logoOpacity = useRef(new Animated.Value(0)).current;
+  const logoTranslateY = useRef(new Animated.Value(120)).current;
+  const logoRotate = useRef(new Animated.Value(-1)).current;
 
   useEffect(() => {
-    Animated.timing(spin, {
-      toValue: 1,
-      duration: 1200,
-      useNativeDriver: true,
-    }).start();
+    const sequence = Animated.sequence([
+      Animated.timing(splashOpacity, {
+        toValue: 1,
+        duration: 700,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.parallel([
+        Animated.timing(logoOpacity, {
+          toValue: 1,
+          duration: 900,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(logoTranslateY, {
+          toValue: 0,
+          duration: 900,
+          easing: Easing.out(Easing.back(1.2)),
+          useNativeDriver: true,
+        }),
+        Animated.timing(logoRotate, {
+          toValue: 0,
+          duration: 900,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.delay(2000),
+    ]);
 
-    const timer = setTimeout(() => {
+    sequence.start(() => {
       navigation.replace('MainTabs');
-    }, 1600);
+    });
+  }, [navigation, logoOpacity, logoRotate, logoTranslateY, splashOpacity]);
 
-    return () => clearTimeout(timer);
-  }, [navigation, spin]);
-
-  const spinRotate = spin.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
+  const rollInRotate = logoRotate.interpolate({
+    inputRange: [-1, 0],
+    outputRange: ['-360deg', '0deg'],
   });
 
   return (
-    <View style={styles.root}>
-      <Animated.Image source={require('../../assets/images/logo.png')} style={[styles.logo, { transform: [{ rotate: spinRotate }] }]} />
-      <Text style={styles.title}>PodWatch</Text>
-      <Text style={styles.sub}>Mobile Edition</Text>
-    </View>
+    <ImageBackground source={require('../../assets/images/splash.png')} style={styles.root} resizeMode="cover">
+      <Animated.View style={[styles.overlay, { opacity: splashOpacity }]}>
+        <Animated.Image
+          source={require('../../assets/images/logo.png')}
+          style={[
+            styles.logo,
+            {
+              opacity: logoOpacity,
+              transform: [{ translateY: logoTranslateY }, { rotate: rollInRotate }],
+            },
+          ]}
+        />
+        <Text style={styles.title}>PodWatch</Text>
+        <Text style={styles.sub}>Mobile Edition</Text>
+      </Animated.View>
+    </ImageBackground>
   );
 }
 
@@ -36,8 +72,12 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     justifyContent: 'center',
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#020617',
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
   },
   logo: {
     width: 130,
