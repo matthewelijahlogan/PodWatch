@@ -1,4 +1,9 @@
+import json
+import os
+
 import requests
+
+from utils.cache import cache
 
 
 CATEGORY_MAP = {
@@ -69,14 +74,11 @@ def _normalize_from_itunes(entry, rank, category_name):
     }
 
 
-def fetch_top_podcasts(category='all', limit=30, country='us'):
-    category = (category or 'all').strip().lower()
-    if category not in CATEGORY_MAP:
-        category = 'all'
-
+def _fetch_live_top_podcasts(category, limit, country):
+    """Fetch normalized chart data from Apple."""
     if category == 'all':
         url = f'https://rss.applemarketingtools.com/api/v2/{country}/podcasts/top/{limit}/podcasts.json'
-        response = requests.get(url, timeout=20)
+        response = requests.get(url, timeout=12)
         response.raise_for_status()
         payload = response.json()
         results = payload.get('feed', {}).get('results', [])
@@ -84,10 +86,36 @@ def fetch_top_podcasts(category='all', limit=30, country='us'):
 
     genre_id = CATEGORY_MAP[category]
     url = f'https://itunes.apple.com/{country}/rss/toppodcasts/limit={limit}/genre={genre_id}/json'
-    response = requests.get(url, timeout=20)
+    response = requests.get(url, timeout=12)
     response.raise_for_status()
     payload = response.json()
     entries = payload.get('feed', {}).get('entry', [])
     category_name = next((item['name'] for item in get_category_list() if item['id'] == category), category.title())
     return [_normalize_from_itunes(entry, idx + 1, category_name) for idx, entry in enumerate(entries[:limit])]
 
+
+def _bundled_fallback(limit):
+    path = os.path.join(os.path.dirname(__file__), '..', 'data', 'top_podcasts.json')
+    with open(path, 'r', encoding='utf-8') as handle:
+        return json.load(handle)[:limit]
+
+
+def fetch_top_podcasts(category='all', limit=30, country='us'):
+    category = (category or 'all').strip().lower()
+    if category not in CATEGORY_MAP:
+        category = 'all'
+
+    key = f'apple:top:{country}:{category}:{limit}'
+    try:
+        data, _ = cache.get_or_load(
+            key,
+            lambda: _fetch_live_top_podcasts(category, limit, country),
+            ttl_seconds=60 * 60,
+        )
+        return data
+    except Exception:
+        stale = cache.get(key, allow_stale=True)
+        if stale is not None:
+            return stale
+        # A checked-in snapshot makes cold starts useful during Apple outages.
+        return _bundled_fallback(limit)

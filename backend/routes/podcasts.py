@@ -10,7 +10,9 @@ podcast_bp = Blueprint('podcast_bp', __name__)
 @podcast_bp.route('/podcasts', methods=['GET'])
 def get_podcasts():
     category = request.args.get('category', 'all')
-    include_episodes = request.args.get('include_episodes', '1').lower() not in {'0', 'false', 'no'}
+    # Episode enrichment is opt-in: searching YouTube once per chart row caused
+    # the old endpoint to exceed request time and API quota.
+    include_episodes = request.args.get('include_episodes', '0').lower() not in {'0', 'false', 'no'}
 
     # Pagination parameters
     try:

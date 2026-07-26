@@ -27,7 +27,7 @@ export const FEATURED_SHOWS = [
     shortTitle: 'Bad Friends',
     host: 'Bobby Lee and Andrew Santino',
     query: 'Bad Friends podcast',
-    channelId: 'UCi-3cgCozyRr_jMfa3fc_Lw',
+    channelId: 'UCRBpynZV0b7ww2XMCfC17qg',
     logo: require('../../assets/images/BadFriends.jpg'),
     poster: require('../../assets/images/badfriendsposter.jpg'),
     stats: [
@@ -71,7 +71,7 @@ export const FEATURED_SHOWS = [
     shortTitle: 'Kill Tony',
     host: 'Tony Hinchcliffe',
     query: 'Kill Tony podcast',
-    channelId: 'UCrMTGv7Xv3A3ODYIUBlrH9g',
+    channelId: 'UCwzCMiicL-hBUzyjWiJaseg',
     logo: require('../../assets/images/KillTony.jpg'),
     poster: require('../../assets/images/KillTonyposter.jpg'),
     stats: [
@@ -93,7 +93,7 @@ export const FEATURED_SHOWS = [
     shortTitle: 'Theo Von',
     host: 'Theo Von',
     query: 'This Past Weekend Theo Von',
-    channelId: 'UCiEKV_MOhwZ7OEcgFyLKilw',
+    channelId: 'UC5AQEUAwCh1sGDvkQtkDWUQ',
     logo: require('../../assets/images/Theo.jpg'),
     poster: require('../../assets/images/thispastweekendposter.jpg'),
     stats: [
