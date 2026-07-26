@@ -41,7 +41,8 @@ python -m unittest discover -s backend/tests -t backend -v
 ## Render free deployment
 
 The Blueprint in `render.yaml` creates one `free` Python web service named
-`podwatch`.
+`podwatch`. It deliberately deploys from the repository root so changes to
+either `frontend/` or `backend/` trigger an automatic deployment.
 
 1. Put `PodWatchProject/PodWatch` at the root of its own GitHub repository.
 2. In Render, choose **New > Blueprint** and connect that repository.
