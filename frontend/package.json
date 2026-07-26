@@ -1,0 +1,10 @@
+{
+  "name": "podwatch-web-smoke-tests",
+  "private": true,
+  "scripts": {
+    "test:web": "node tests/web-smoke.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.0"
+  }
+}

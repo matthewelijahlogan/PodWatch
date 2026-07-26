@@ -1,55 +1,109 @@
-<!-- frontend/html/index.html -->
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PodWatch – Podcast TV Guide</title>
-
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/index.css">
-  <link rel="icon" type="image/x-icon" href="../assets/img/favicon.ico">
+  <meta name="description" content="A TV-guide-style home for video podcasts.">
+  <title>PodWatch — Your podcast TV guide</title>
+  <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
+  <link rel="stylesheet" href="/css/webapp.css">
 </head>
 <body>
-  <div class="container">
-    <header class="guide-header">
-      <div class="title-flex">
-        <img src="../assets/img/logo/logo.png" alt="PodWatch Logo" class="logo-img" id="logo">
-        <div class="title-text">
-          <h1>PodWatch</h1>
-        </div>
-        <nav class="dropdown-menu" id="dropdownMenu">
-          <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="categories.html">Categories</a></li>
-            <li><a href="recommended.html">Recommended</a></li>
-            <li><a href="new-episodes.html">New Episodes</a></li>
-            <li><a href="editors-pick.html">Editor's Picks</a></li>
-            <li><a href="about.html">About</a></li>
-          </ul>
-        </nav>
+  <a class="skip-link" href="#content">Skip to content</a>
+
+  <header class="site-header">
+    <a class="brand" href="#guide" data-view-link="guide" aria-label="PodWatch guide">
+      <img src="/assets/img/logo/logo.png" alt="">
+      <span>PodWatch</span>
+    </a>
+
+    <nav class="primary-nav" aria-label="Primary navigation">
+      <button class="nav-button active" type="button" data-view="guide">Guide</button>
+      <button class="nav-button" type="button" data-view="discover">Discover</button>
+      <button class="nav-button" type="button" data-view="categories">Categories</button>
+      <button class="nav-button" type="button" data-view="picks">Editor’s Picks</button>
+      <button class="nav-button" type="button" data-view="about">About</button>
+    </nav>
+
+    <div class="service-status" id="serviceStatus" role="status">
+      <span class="status-dot"></span>
+      <span>Connecting</span>
+    </div>
+  </header>
+
+  <main id="content">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Watch what’s worth hearing</p>
+        <h1 id="pageTitle">The podcast guide</h1>
+        <p class="hero-copy" id="pageDescription">
+          Full episodes from official channels, arranged like the TV guide you already know.
+        </p>
       </div>
-    </header>
+      <div class="hero-mark" aria-hidden="true">
+        <span>PW</span>
+      </div>
+    </section>
 
-<main>
+    <section class="toolbar" id="toolbar" aria-label="Guide controls">
+      <label class="search-field">
+        <span>Search</span>
+        <input id="searchInput" type="search" placeholder="Show, host, or episode" autocomplete="off">
+      </label>
+      <label class="select-field">
+        <span>Category</span>
+        <select id="categorySelect">
+          <option value="all">All categories</option>
+          <option value="comedy">Comedy</option>
+          <option value="news">News</option>
+          <option value="business">Business</option>
+          <option value="truecrime">True Crime</option>
+          <option value="sports">Sports</option>
+          <option value="education">Education</option>
+          <option value="society">Society &amp; Culture</option>
+        </select>
+      </label>
+      <button class="refresh-button" id="refreshButton" type="button">Refresh guide</button>
+    </section>
 
-  <!-- 🔧 ADD THIS: where your podcast cards will load -->
-  <section class="podcast-grid"></section>
+    <section class="view" id="viewContainer" aria-live="polite" aria-busy="true">
+      <div class="loading-card">
+        <span class="spinner"></span>
+        <p>Loading PodWatch…</p>
+      </div>
+    </section>
   </main>
 
-  </div>
-
-  <footer class="footer">
-    <p>&copy; 2025 PodWatch. All rights reserved.</p>
+  <footer>
+    <span>PodWatch</span>
+    <span>Official links. No scraped video streams.</span>
   </footer>
 
-  <!-- JavaScript modules -->
-  <script type="module">
-  import { loadPodcastGuide } from '../js/indexLoader.js';
-  loadPodcastGuide();
-  </script>
-  <script type="module" src="../js/app.js"></script>
+  <dialog class="player-dialog" id="playerDialog" aria-labelledby="playerTitle">
+    <div class="dialog-header">
+      <div>
+        <p class="eyebrow">Now playing</p>
+        <h2 id="playerTitle">Episode</h2>
+      </div>
+      <button class="icon-button" id="closePlayerButton" type="button" aria-label="Close player">×</button>
+    </div>
+    <div class="player-shell">
+      <iframe
+        id="playerFrame"
+        title="PodWatch YouTube player"
+        allow="autoplay; encrypted-media; picture-in-picture"
+        allowfullscreen
+        referrerpolicy="strict-origin-when-cross-origin"
+      ></iframe>
+    </div>
+    <div class="dialog-actions">
+      <a class="youtube-link" id="youtubeLink" href="#" target="_blank" rel="noopener noreferrer">
+        Open on YouTube
+      </a>
+      <button class="secondary-button" id="dialogCloseButton" type="button">Close</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="/js/app.js"></script>
 </body>
 </html>
