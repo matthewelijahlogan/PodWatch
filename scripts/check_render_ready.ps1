@@ -36,11 +36,19 @@ if (Test-Path $renderYaml) {
   } else {
     Write-Host "WARN healthCheckPath is not /api/health" -ForegroundColor Yellow
   }
+
+  if ($content -match "plan:\s*free") {
+    Write-Host "OK   Render instance plan is free"
+  } else {
+    Write-Host "FAIL Render instance plan is not free" -ForegroundColor Red
+    $failed = $true
+  }
 }
 
-$compile = & python -m py_compile (Join-Path $root "backend/app.py") 2>&1
+$backend = Join-Path $root "backend"
+$compile = & python -m compileall -q $backend 2>&1
 if ($LASTEXITCODE -eq 0) {
-  Write-Host "OK   backend/app.py compiles"
+  Write-Host "OK   backend Python files compile"
 } else {
   Write-Host "FAIL backend/app.py failed to compile" -ForegroundColor Red
   $compile | ForEach-Object { Write-Host $_ }
@@ -54,4 +62,4 @@ if ($failed) {
 }
 
 Write-Host "Readiness check passed." -ForegroundColor Green
-Write-Host "Reminder: set YOUTUBE_API_KEY in Render Environment (optional, recommended)."
+Write-Host "YOUTUBE_API_KEY is optional; public channel feeds are the primary source."

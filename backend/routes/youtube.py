@@ -11,7 +11,14 @@ def get_latest_episodes():
     if not query:
         return jsonify({'error': 'Missing search query'}), 400
 
-    return jsonify(get_latest_youtube_episodes(query, limit=3))
+    try:
+        limit = int(request.args.get('limit', 3))
+    except (TypeError, ValueError):
+        limit = 3
+    limit = max(1, min(limit, 20))
+
+    channel_id = request.args.get('channel_id')
+    return jsonify(get_latest_youtube_episodes(query, limit=limit, channel_id=channel_id))
 
 
 @youtube_bp.route('/youtube/top', methods=['GET'])
@@ -20,5 +27,7 @@ def get_top_episodes():
     if not query:
         return jsonify({'error': 'Missing search query'}), 400
 
-    # Reuse latest fallback behavior so this endpoint still returns data without API keys.
-    return jsonify(get_latest_youtube_episodes(query, limit=3))
+    # "Top" is retained for old clients. A channel's recent official uploads are
+    # deterministic and quota-free; arbitrary popularity search was unreliable.
+    channel_id = request.args.get('channel_id')
+    return jsonify(get_latest_youtube_episodes(query, limit=3, channel_id=channel_id))

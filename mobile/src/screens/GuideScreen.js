@@ -4,7 +4,8 @@ import FeaturedShowCard from '../components/FeaturedShowCard';
 import ScreenContainer from '../components/ScreenContainer';
 import SkeletonCard from '../components/SkeletonCard';
 import { useFavorites } from '../context/FavoritesContext';
-import { getTopPodcastsPage } from '../lib/api';
+import { getGuide } from '../lib/api';
+import { COLORS, FONTS } from '../theme/tokens';
 
 function trimPodcastPrefix(showTitle, rawTitle) {
   if (!rawTitle) return '';
@@ -32,22 +33,26 @@ export default function GuideScreen({ navigation }) {
   const loadEpisodes = useCallback(async () => {
     setError('');
     try {
-      const response = await getTopPodcastsPage(1, 30, category);
-      const mapped = (response.podcasts || []).map((podcast, index) => {
+      const response = await getGuide(category, 5);
+      const mapped = response.channels.map((channel, index) => {
+        const podcast = channel.show || {};
         const id = String(podcast.id || `${podcast.title || 'pod'}-${index}`);
         return {
           id,
           title: podcast.title || 'Untitled Podcast',
-          shortTitle: podcast.title || 'Untitled Podcast',
-          host: podcast.author || '',
-          query: podcast.title || podcast.author || '',
-          image: podcast.image || '',
-          latestEpisodes: Array.isArray(podcast.latest_episodes) ? podcast.latest_episodes : [],
+          shortTitle: podcast.short_title || podcast.title || 'Untitled Podcast',
+          host: podcast.host || '',
+          query: podcast.youtube_query || podcast.title || '',
+          image: channel.episodes?.[0]?.thumbnail || '',
+          latestEpisodes: Array.isArray(channel.episodes) ? channel.episodes : [],
           rank: podcast.rank || index + 1,
           category: podcast.category || 'All',
         };
       });
       setShows(mapped);
+      if (response.partial) {
+        setError('Some channels are temporarily unavailable; cached guide data is shown where possible.');
+      }
     } catch (e) {
       setError(e.message || 'Failed to load guide episodes.');
     }
@@ -104,7 +109,7 @@ export default function GuideScreen({ navigation }) {
       <TextInput
         style={styles.search}
         placeholder="Search shows or hosts"
-        placeholderTextColor="#94a3b8"
+        placeholderTextColor="#8d8d8d"
         value={query}
         onChangeText={setQuery}
       />
@@ -121,33 +126,38 @@ export default function GuideScreen({ navigation }) {
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         >
           {filteredShows.map((show) => (
-            <FeaturedShowCard
-              key={show.id}
-              show={show}
-              favorite={isFavorite(`show:${show.id}`)}
-              onToggleFavorite={() => toggleFavorite(`show:${show.id}`, {
-                kind: 'show',
-                id: show.id,
-                title: show.title,
-                query: show.query,
-                author: show.host,
-                image: show.image,
-                logoUri: show.image,
-              })}
-              episodeTitle={trimPodcastPrefix(show.title, show.latestEpisodes?.[0]?.title)}
-              onPress={() => navigation.navigate('Player', {
-                showId: show.id,
-                title: show.title,
-                query: show.query,
-                episodeUrl: show.latestEpisodes?.[0]?.url || '',
-              })}
-              onPlayPress={() => navigation.navigate('Player', {
-                showId: show.id,
-                title: show.title,
-                query: show.query,
-                episodeUrl: show.latestEpisodes?.[0]?.url || '',
-              })}
-            />
+            (() => {
+              const firstUrl = show.latestEpisodes?.[0]?.url || '';
+              return (
+                <FeaturedShowCard
+                  key={show.id}
+                  show={show}
+                  favorite={isFavorite(`show:${show.id}`)}
+                  onToggleFavorite={() => toggleFavorite(`show:${show.id}`, {
+                    kind: 'show',
+                    id: show.id,
+                    title: show.title,
+                    query: show.query,
+                    author: show.host,
+                    image: show.image,
+                    logoUri: show.image,
+                  })}
+                  episodeTitle={trimPodcastPrefix(show.title, show.latestEpisodes?.[0]?.title)}
+                  onPress={() => navigation.navigate('Player', {
+                    showId: show.id,
+                    title: show.title,
+                    query: show.query,
+                    episodeUrl: firstUrl,
+                  })}
+                  onPlayPress={firstUrl ? () => navigation.navigate('Player', {
+                    showId: show.id,
+                    title: show.title,
+                    query: show.query,
+                    episodeUrl: firstUrl,
+                  }) : undefined}
+                />
+              );
+            })()
           ))}
         </ScrollView>
       )}
@@ -164,31 +174,32 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   filterChip: {
-    backgroundColor: '#0b1328',
+    backgroundColor: '#101010',
     borderWidth: 1,
-    borderColor: '#334155',
+    borderColor: COLORS.border,
     borderRadius: 999,
     paddingHorizontal: 10,
     paddingVertical: 6,
   },
   filterChipActive: {
-    borderColor: '#38bdf8',
-    backgroundColor: '#0f172a',
+    borderColor: COLORS.red,
+    backgroundColor: '#230b0f',
   },
   filterChipText: {
-    color: '#e2e8f0',
+    color: COLORS.text,
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: FONTS.body,
   },
   search: {
     borderWidth: 1,
-    borderColor: '#334155',
-    backgroundColor: '#0b1328',
-    color: '#e2e8f0',
+    borderColor: COLORS.border,
+    backgroundColor: '#0f0f0f',
+    color: COLORS.text,
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 10,
     marginBottom: 10,
+    fontFamily: FONTS.body,
   },
   error: {
     color: '#fecaca',

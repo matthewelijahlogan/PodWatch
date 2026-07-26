@@ -1,6 +1,6 @@
 # backend/app.py
 
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, jsonify, render_template, request, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
@@ -13,6 +13,7 @@ from routes.api import api_bp
 from routes.categories import categories_bp
 from routes.reviews import reviews_bp
 from routes.youtube import youtube_bp
+from routes.platform import platform_bp
 
 # Create Flask app with correct folders
 app = Flask(
@@ -29,6 +30,28 @@ app.register_blueprint(api_bp)
 app.register_blueprint(categories_bp)
 app.register_blueprint(youtube_bp, url_prefix='/api')
 app.register_blueprint(reviews_bp)
+app.register_blueprint(platform_bp)
+
+
+@app.after_request
+def add_service_headers(response):
+    response.headers.setdefault('X-Content-Type-Options', 'nosniff')
+    response.headers.setdefault('Referrer-Policy', 'strict-origin-when-cross-origin')
+    if request.path.startswith('/api/') and 'Cache-Control' not in response.headers:
+        response.headers['Cache-Control'] = 'no-store'
+    return response
+
+
+@app.errorhandler(404)
+def not_found(_error):
+    if request.path.startswith('/api/'):
+        return jsonify({'error': {'code': 'not_found', 'message': 'Endpoint not found'}}), 404
+    return send_from_directory('../frontend', 'html/index.html')
+
+
+@app.errorhandler(500)
+def server_error(_error):
+    return jsonify({'error': {'code': 'internal_error', 'message': 'Unexpected service error'}}), 500
 
 # Route for root index page
 @app.route('/')

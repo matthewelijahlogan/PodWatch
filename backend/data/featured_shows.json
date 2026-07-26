@@ -1,0 +1,74 @@
+[
+  {
+    "id": "jre",
+    "title": "The Joe Rogan Experience",
+    "short_title": "JRE",
+    "host": "Joe Rogan",
+    "description": "Long-form conversations across comedy, culture, science, and current events.",
+    "youtube_channel_id": "UCzQUP1qoWDoEbmsQxvdjxgQ",
+    "episode_title_pattern": "^Joe Rogan Experience #\\d+",
+    "youtube_query": "Joe Rogan Experience",
+    "aliases": ["Joe Rogan", "JRE"],
+    "category": "comedy"
+  },
+  {
+    "id": "badfriends",
+    "title": "Bad Friends",
+    "short_title": "Bad Friends",
+    "host": "Bobby Lee and Andrew Santino",
+    "description": "Comedy conversations, stories, and recurring bits.",
+    "youtube_channel_id": "UCRBpynZV0b7ww2XMCfC17qg",
+    "episode_title_pattern": "\\bEp \\d+\\b.*\\bBad Friends\\b",
+    "youtube_query": "Bad Friends podcast",
+    "aliases": ["Bad Friends Podcast"],
+    "category": "comedy"
+  },
+  {
+    "id": "mattshane",
+    "title": "Matt and Shane's Secret Podcast",
+    "short_title": "Matt & Shane's",
+    "host": "Matt McCusker and Shane Gillis",
+    "description": "Free-form comedy conversations and guests.",
+    "youtube_channel_id": "UC4fZeoNxAXfbIpT3swsVh9w",
+    "episode_title_pattern": "^Ep \\d+",
+    "youtube_query": "Matt and Shane's Secret Podcast",
+    "aliases": ["MSSP", "Matt and Shane"],
+    "category": "comedy"
+  },
+  {
+    "id": "killtony",
+    "title": "Kill Tony",
+    "short_title": "Kill Tony",
+    "host": "Tony Hinchcliffe",
+    "description": "Live stand-up sets, improvisation, and guest judges.",
+    "youtube_channel_id": "UCwzCMiicL-hBUzyjWiJaseg",
+    "episode_title_pattern": "^KT #\\d+",
+    "youtube_query": "Kill Tony podcast",
+    "aliases": ["KillTony"],
+    "category": "comedy"
+  },
+  {
+    "id": "theovon",
+    "title": "This Past Weekend",
+    "short_title": "Theo Von",
+    "host": "Theo Von",
+    "description": "Solo stories and guest interviews with Theo Von.",
+    "youtube_channel_id": "UC5AQEUAwCh1sGDvkQtkDWUQ",
+    "episode_title_pattern": "This Past Weekend.*#\\d+",
+    "youtube_query": "This Past Weekend Theo Von",
+    "aliases": ["This Past Weekend with Theo Von"],
+    "category": "comedy"
+  },
+  {
+    "id": "stavvy",
+    "title": "Stavvy's World",
+    "short_title": "Stavvy's World",
+    "host": "Stavros Halkias",
+    "description": "Comedy interviews and audience-driven episodes.",
+    "youtube_channel_id": "UCBVAaHkKSwfzee79b7SPyPw",
+    "episode_title_pattern": "Stavvy's World #\\d+.*Full Episode",
+    "youtube_query": "Stavvy's World podcast",
+    "aliases": ["Stavros Halkias podcast"],
+    "category": "comedy"
+  }
+]

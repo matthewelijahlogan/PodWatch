@@ -7,6 +7,8 @@ let podcastsData = [];
 
 const container = document.querySelector('.podcast-grid');
 let paginationControls;
+let playerModal;
+let playerIframe;
 
 function cleanEpisodeTitle(rawTitle, podcastName) {
   if (!rawTitle || !podcastName) return rawTitle;
@@ -16,23 +18,101 @@ function cleanEpisodeTitle(rawTitle, podcastName) {
 
   const index = normalizedTitle.indexOf(normalizedPodcast);
   if (index === 0) {
-    return rawTitle.substring(podcastName.length).replace(/^[:\-–\s]+/, '').trim();
+    return rawTitle.substring(podcastName.length).replace(/^[:\-\u2013\s]+/, '').trim();
   }
 
   return rawTitle.trim();
 }
 
+function toEmbedUrl(rawUrl) {
+  if (!rawUrl) return '';
+
+  try {
+    const url = new URL(rawUrl);
+    const host = url.hostname.toLowerCase();
+
+    if (host.includes('youtube.com') && url.pathname === '/watch') {
+      const id = url.searchParams.get('v');
+      if (id) return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`;
+    }
+
+    if (host.includes('youtu.be')) {
+      const id = url.pathname.replace('/', '').trim();
+      if (id) return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`;
+    }
+
+    if (host.includes('youtube.com') && url.pathname.startsWith('/shorts/')) {
+      const id = url.pathname.split('/')[2];
+      if (id) return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`;
+    }
+  } catch (_) {
+    return rawUrl;
+  }
+
+  return rawUrl;
+}
+
+function ensurePlayerModal() {
+  if (playerModal) return;
+
+  playerModal = document.createElement('div');
+  playerModal.className = 'player-modal hidden';
+  playerModal.innerHTML = `
+    <div class="player-modal-backdrop"></div>
+    <div class="player-modal-content">
+      <button class="player-close" type="button" aria-label="Close player">Close</button>
+      <div class="video-frame-shell">
+        <iframe
+          class="video-frame-embed"
+          title="PodWatch Video Player"
+          frameborder="0"
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowfullscreen
+          referrerpolicy="origin-when-cross-origin"
+        ></iframe>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(playerModal);
+  playerIframe = playerModal.querySelector('.video-frame-embed');
+
+  const closeModal = () => {
+    playerModal.classList.add('hidden');
+    playerIframe.src = '';
+  };
+
+  playerModal.querySelector('.player-close').addEventListener('click', closeModal);
+  playerModal.querySelector('.player-modal-backdrop').addEventListener('click', closeModal);
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !playerModal.classList.contains('hidden')) {
+      closeModal();
+    }
+  });
+}
+
+function openPlayerModal(rawUrl) {
+  const embedUrl = toEmbedUrl(rawUrl);
+  if (!embedUrl) return;
+
+  ensurePlayerModal();
+  playerIframe.src = embedUrl;
+  playerModal.classList.remove('hidden');
+}
 
 function renderPodcasts(podcasts) {
   container.innerHTML = '';
 
-  podcasts.forEach(pod => {
+  podcasts.forEach((pod) => {
     const row = document.createElement('div');
     row.classList.add('podcast-row');
 
     const logoImg = document.createElement('img');
     logoImg.classList.add('podcast-logo');
-    logoImg.src = pod.image && pod.image.length > 0 ? `/${pod.image}` : 'https://via.placeholder.com/60x60?text=🎧';
+    logoImg.src = pod.image && pod.image.length > 0
+      ? pod.image
+      : (pod.latest_episodes?.[0]?.thumbnail || '/assets/img/logo/logo.png');
     logoImg.alt = `${pod.title || 'Podcast'} logo`;
 
     const titleText = document.createElement('div');
@@ -46,34 +126,25 @@ function renderPodcasts(podcasts) {
     episodeContainer.classList.add('episode-container');
     row.appendChild(episodeContainer);
 
-    fetch(`/api/youtube/latest?q=${encodeURIComponent(pod.title || '')}`)
-      .then(res => res.json())
-      .then(episodes => {
-        if (Array.isArray(episodes)) {
-          episodes.forEach(ep => {
-            const cleanedTitle = cleanEpisodeTitle(ep.title, pod.title);
-            const epSlot = document.createElement('div');
-            epSlot.classList.add('episode-slot');
+    const episodes = Array.isArray(pod.latest_episodes) ? pod.latest_episodes : [];
+    episodes.forEach((ep) => {
+      const cleanedTitle = cleanEpisodeTitle(ep.title, pod.title);
+      const epSlot = document.createElement('div');
+      epSlot.classList.add('episode-slot');
 
-            const scrollText = document.createElement('span');
-            scrollText.classList.add('scroll-text');
-            scrollText.textContent = cleanedTitle;
+      const scrollText = document.createElement('span');
+      scrollText.classList.add('scroll-text');
+      scrollText.textContent = cleanedTitle;
 
-            epSlot.appendChild(scrollText);
-            epSlot.title = cleanedTitle;
+      epSlot.appendChild(scrollText);
+      epSlot.title = cleanedTitle;
 
-            epSlot.addEventListener('click', (e) => {
-              e.stopPropagation();
-              window.open(ep.url, '_blank');
-            });
-
-            episodeContainer.appendChild(epSlot);
-          });
-        }
-      })
-      .catch(err => {
-        console.error(`❌ Error loading episodes for ${pod.title}:`, err);
+      epSlot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openPlayerModal(ep.embed_url || ep.url);
       });
+      episodeContainer.appendChild(epSlot);
+    });
 
     row.addEventListener('click', () => {
       if (pod.link) window.open(pod.link, '_blank');
@@ -127,23 +198,26 @@ function updateDisplay() {
 
 export async function loadPodcastGuide() {
   if (!container) {
-    console.error('❌ .podcast-grid not found');
+    console.error('.podcast-grid not found');
     return;
   }
 
-  container.innerHTML = '<p>Loading top podcasts...</p>';
+  ensurePlayerModal();
+  container.innerHTML = '<p>Loading the PodWatch guide...</p>';
 
   try {
-    const res = await fetch('/api/podcasts');
+    const res = await fetch('/api/v1/guide?episodes_per_show=5');
     if (!res.ok) throw new Error(`Fetch error: ${res.status}`);
 
     const data = await res.json();
 
-    podcastsData = Array.isArray(data)
-      ? data
-      : Array.isArray(data.podcasts)
-        ? data.podcasts
-        : [];
+    podcastsData = Array.isArray(data.channels)
+      ? data.channels.map((channel) => ({
+          ...channel.show,
+          image: channel.episodes?.[0]?.thumbnail || '',
+          latest_episodes: channel.episodes || [],
+        }))
+      : [];
 
     podcastsData = podcastsData.slice(0, 50);
     totalPodcasts = podcastsData.length;

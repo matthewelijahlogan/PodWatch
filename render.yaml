@@ -1,11 +1,11 @@
 services:
   - type: web
-    name: podwatch-backend
-    env: python
+    name: podwatch
+    runtime: python
     rootDir: backend
-    plan: starter
+    plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 60 --access-logfile -
     healthCheckPath: /api/health
     envVars:
       - key: PYTHON_VERSION
