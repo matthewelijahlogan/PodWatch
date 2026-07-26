@@ -25,10 +25,11 @@ $renderYaml = Join-Path $root "render.yaml"
 if (Test-Path $renderYaml) {
   $content = Get-Content -Raw $renderYaml
 
-  if ($content -match "startCommand:\s*gunicorn\s+app:app") {
-    Write-Host "OK   render startCommand uses gunicorn app:app"
+  if ($content -match "startCommand:\s*gunicorn\s+--chdir\s+backend\s+app:app") {
+    Write-Host "OK   render startCommand uses backend/app.py"
   } else {
-    Write-Host "WARN render startCommand does not look like gunicorn app:app" -ForegroundColor Yellow
+    Write-Host "FAIL render startCommand does not use backend/app.py" -ForegroundColor Red
+    $failed = $true
   }
 
   if ($content -match "healthCheckPath:\s*/api/health") {
@@ -42,6 +43,13 @@ if (Test-Path $renderYaml) {
   } else {
     Write-Host "FAIL Render instance plan is not free" -ForegroundColor Red
     $failed = $true
+  }
+
+  if ($content -match "(?m)^\s*rootDir:") {
+    Write-Host "FAIL rootDir would prevent frontend-only auto-deploys" -ForegroundColor Red
+    $failed = $true
+  } else {
+    Write-Host "OK   repository-root deploy watches frontend and backend"
   }
 }
 

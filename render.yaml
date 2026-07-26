@@ -2,10 +2,9 @@ services:
   - type: web
     name: podwatch
     runtime: python
-    rootDir: backend
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 60 --access-logfile -
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: gunicorn --chdir backend app:app --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 60 --access-logfile -
     healthCheckPath: /api/health
     envVars:
       - key: PYTHON_VERSION
